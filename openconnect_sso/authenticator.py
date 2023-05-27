@@ -18,7 +18,9 @@ class Authenticator:
         self.session = create_http_session(proxy, version)
 
     async def authenticate(self, display_mode):
-        self._detect_authentication_target_url()
+        logger.info("skip detect auth url")
+        # self._detect_authentication_target_url()
+        logger.info("after detect auth")
 
         response = self._start_authentication()
         if not isinstance(response, AuthRequestResponse):
@@ -185,7 +187,7 @@ def parse_auth_complete_response(xml):
     assert xml.auth.get("id") == "success"
     resp = AuthCompleteResponse(
         auth_id=xml.auth.get("id"),
-        auth_message=xml.auth.message,
+        auth_message=xml.auth.banner,
         session_token=xml["session-token"],
         server_cert_hash=xml.config["vpn-base-config"]["server-cert-hash"],
     )
