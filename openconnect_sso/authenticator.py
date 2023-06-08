@@ -1,3 +1,4 @@
+import os
 import attr
 import requests
 import structlog
@@ -18,9 +19,11 @@ class Authenticator:
         self.session = create_http_session(proxy, version)
 
     async def authenticate(self, display_mode):
-        logger.info("skip detect auth url")
-        # self._detect_authentication_target_url()
-        logger.info("after detect auth")
+        if os.environ.get("SKIP_DETECT_AUTH_URL"):
+            logger.info("skip detect auth url")
+        else:
+            logger.info("running detect auth url")
+            self._detect_authentication_target_url()
 
         response = self._start_authentication()
         if not isinstance(response, AuthRequestResponse):
